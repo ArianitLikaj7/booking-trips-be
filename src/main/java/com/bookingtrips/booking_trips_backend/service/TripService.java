@@ -9,18 +9,18 @@ import com.bookingtrips.booking_trips_backend.exception.MismatchedInputException
 import com.bookingtrips.booking_trips_backend.exception.ResourceNotFoundException;
 import com.bookingtrips.booking_trips_backend.mapper.TripMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
-@Configuration
+@Service
 @RequiredArgsConstructor
 public class TripService {
     private final TripRepository tripRepository;
     private final TripMapper tripMapper;
     private final AuthenticationService authenticationService;
-    private final UserService userService;
 
     public TripDto create(TripRequest request) {
         Trip trip = tripMapper.toEntity(request);
@@ -80,12 +80,10 @@ public class TripService {
     }
 
     public List<TripDto> findTripsByProperties(String search) {
-       List<TripDto> trips = tripRepository.findTripsByProperties(search);
-        if (trips == null || trips.isEmpty()) {
-            throw new ResourceNotFoundException(String.format("No trips found with search %s", search));
-        }
-        return trips;
+        return Optional.ofNullable(tripRepository.findTripsByProperties(search))
+                .orElse(List.of());
     }
+
 
     public List<TripDto> findTripsByPrice(Double price) {
         return tripRepository.findTripsByPrice(price);

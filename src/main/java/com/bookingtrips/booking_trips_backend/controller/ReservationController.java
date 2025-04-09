@@ -36,7 +36,7 @@ public class ReservationController {
 
     @GetMapping
     public ResponseEntity<List<ReservationDtoAndUserDto>> getAllReservations() {
-        List<ReservationDtoAndUserDto> reservations = reservationService.getAll();
+        List<ReservationDtoAndUserDto> reservations = reservationService.getAllReservationsForAdmin();
         return new ResponseEntity<>(reservations, HttpStatus.OK);
     }
 

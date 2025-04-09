@@ -11,12 +11,15 @@ import com.bookingtrips.booking_trips_backend.entity.Role;
 import com.bookingtrips.booking_trips_backend.entity.User;
 import com.bookingtrips.booking_trips_backend.exception.TokenRefreshException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 
 @Service
@@ -31,16 +34,26 @@ public class AuthenticationService {
 
 
     public AuthenticationResponse login(AuthenticationRequest request) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.username(),
-                        request.password()
-                )
-        );
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            request.username(),
+                            request.password()
+                    )
+            );
+        } catch (BadCredentialsException ex) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid username or password");
+        }
+
         var user = customUserDetailService.loadUserByUsername(request.username());
-        return new AuthenticationResponse(jwtService.generateToken(user),
-                jwtService.generateRefreshToken(user),user.getRole());
+
+        return new AuthenticationResponse(
+                jwtService.generateToken(user),
+                jwtService.generateRefreshToken(user),
+                user.getRole()
+        );
     }
+
 
     public void register(RegisterRequest request) {
         var user = User.builder()

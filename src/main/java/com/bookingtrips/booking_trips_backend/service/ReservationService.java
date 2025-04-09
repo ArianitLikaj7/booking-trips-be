@@ -19,7 +19,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -31,50 +30,42 @@ public class ReservationService {
 
     @Transactional
     public ReservationDto create(ReservationRequest request) {
-        validateSeatAvailability(request.getTripId(), request.getSeatNumber());
-        Reservation reservation = reservationMapper.toEntity(request);
-        reservation.setUserId(authenticationService.getLoggedInUser().getUserId());
-        mapTripToReservation(request, reservation);
-        updateAvailableSeats(request.getTripId(), request.getSeatNumber());
-        if (reservationRepository.existsByUserIdAndTripId(reservation.getUserId(), request.getTripId())) {
-            throw new ReservationAlreadyExists(
-                    "Reservation with user_id: " + reservation.getUserId() + " in this trip already exists");
+        Long userId = authenticationService.getLoggedInUser().getUserId();
+
+        if (reservationRepository.existsByUserIdAndTripId(userId, request.getTripId())) {
+            throw new ReservationAlreadyExists("Reservation for this trip already exists.");
         }
+
+        validateSeatAvailability(request.getTripId(), request.getSeatNumber());
+
+        Reservation reservation = reservationMapper.toEntity(request);
+        reservation.setUserId(userId);
+        mapTripToReservation(request, reservation);
+
+        updateAvailableSeats(request.getTripId(), request.getSeatNumber());
+
         Reservation reservationInDb = reservationRepository.save(reservation);
         return reservationMapper.toDto(reservationInDb);
     }
 
     public ReservationDto getById(Long id) {
         Reservation reservationInDb = reservationRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        String.format("Reservation with %s id not found", id)));
+                .orElseThrow(() -> new ResourceNotFoundException("Reservation with id %s not found".formatted(id)));
         return reservationMapper.toDto(reservationInDb);
     }
 
-
-
-    public List<ReservationDtoAndUserDto> getAll() {
+    public List<ReservationDtoAndUserDto> getAllReservationsForAdmin() {
         return reservationRepository.getReservationsByAdminId(authenticationService.getLoggedInUser().getUserId());
     }
 
     public List<TripDto> myReservation() {
         Long userId = authenticationService.getLoggedInUser().getUserId();
-        List<TripDto> reservations = reservationRepository.findMyReservations(userId);
-        if (reservations.isEmpty()) {
-            throw new ResourceNotFoundException(
-                    String.format("No reservations found for user with id: %s", userId));
-        }
-        return reservations;
+        return reservationRepository.findMyReservations(userId);
     }
 
     public List<UserDto> getByTripIdAndUserId(Long tripId) {
         Long userId = authenticationService.getLoggedInUser().getUserId();
-        List<UserDto> reservations = reservationRepository.getReservationsByTripId(userId, tripId);
-        if (reservations.isEmpty()) {
-            throw new ResourceNotFoundException(
-                    String.format("No reservations found for user with id: %s and trip with id: %s", userId, tripId));
-        }
-        return reservations;
+        return reservationRepository.getReservationsByTripId(userId, tripId);
     }
 
     public Long countReservation() {
@@ -84,29 +75,32 @@ public class ReservationService {
 
     public ReservationDto update(Long id, ReservationUpdateRequest request) {
         if (!id.equals(request.getId())) {
-            throw new MismatchedInputException("Ids don't match");
+            throw new MismatchedInputException("IDs don't match.");
         }
+
         Reservation reservationInDb = reservationRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        String.format("Reservation with %s id not found", id)));
+                .orElseThrow(() -> new ResourceNotFoundException("Reservation with id %s not found".formatted(id)));
+
         reservationMapper.toEntity(request, reservationInDb);
         return reservationMapper.toDto(reservationRepository.save(reservationInDb));
     }
 
     public void delete(Long id) {
-        Reservation reservationInDb = reservationRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        String.format("Reservation with %s id not found", id)));
+        if (!reservationRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Reservation with id %s not found".formatted(id));
+        }
         reservationRepository.deleteById(id);
     }
 
     private void updateAvailableSeats(Long tripId, int seatNumber) {
         Trip trip = tripService.getEntityById(tripId);
-        int availableSeats = trip.getAvailableSeats() - seatNumber;
-        if (availableSeats < 0) {
-            throw new IlegalNumberOfSeatsException("No available seats left.");
+        int updatedSeats = trip.getAvailableSeats() - seatNumber;
+
+        if (updatedSeats < 0) {
+            throw new IlegalNumberOfSeatsException("Not enough available seats.");
         }
-        trip.setAvailableSeats(availableSeats);
+
+        trip.setAvailableSeats(updatedSeats);
         tripService.saveEntity(trip);
     }
 
@@ -114,12 +108,11 @@ public class ReservationService {
         TripDto tripDto = tripService.getById(tripId);
         if (seatNumber > tripDto.getAvailableSeats() || seatNumber < 1) {
             throw new IlegalNumberOfSeatsException(
-                    "Seat number: " + seatNumber + " is not available. Available seats: " + tripDto.getAvailableSeats());
+                    "Seat number %d is not available. Available: %d".formatted(seatNumber, tripDto.getAvailableSeats()));
         }
     }
 
     private void mapTripToReservation(ReservationRequest request, Reservation reservation) {
-        TripDto tripDto = tripService.getById(request.getTripId());
-        reservation.setTripId(tripDto.getId());
+        reservation.setTripId(request.getTripId());
     }
 }

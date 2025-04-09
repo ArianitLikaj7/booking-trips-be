@@ -92,4 +92,25 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         ExceptionResponseDto exceptionResponse = new ExceptionResponseDto("400", ex.getMessage(), null);
         return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
     }
+
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<Object> handleBadCredentials(BadCredentialsException ex) {
+        log.warn("Bad credentials: {}", ex.getMessage());
+
+        ExceptionResponseDto exceptionResponse = new ExceptionResponseDto(
+                "401",
+                "Invalid username or password",
+                null
+        );
+        return new ResponseEntity<>(exceptionResponse, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(FavoriteAlreadyExistsException.class)
+    public ResponseEntity<Object> handleFavoriteAlreadyExists(FavoriteAlreadyExistsException ex) {
+        log.warn("Favorite already exists: {}", ex.getMessage());
+
+        ExceptionResponseDto exceptionResponse = new ExceptionResponseDto("409", ex.getMessage(), null);
+        return new ResponseEntity<>(exceptionResponse, HttpStatus.CONFLICT);
+    }
 }

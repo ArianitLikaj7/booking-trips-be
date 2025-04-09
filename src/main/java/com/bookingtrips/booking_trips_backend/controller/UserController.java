@@ -2,7 +2,9 @@ package com.bookingtrips.booking_trips_backend.controller;
 
 import com.bookingtrips.booking_trips_backend.dto.UserDto;
 import com.bookingtrips.booking_trips_backend.dto.request.UserRequest;
+import com.bookingtrips.booking_trips_backend.dto.request.UserUpdateRequest;
 import com.bookingtrips.booking_trips_backend.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +21,7 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
-    public ResponseEntity<UserDto> create(@RequestBody UserRequest request){
+    public ResponseEntity<UserDto> create(@Valid @RequestBody UserRequest request){
         return new ResponseEntity<>(userService.create(request), HttpStatus.CREATED);
     }
 
@@ -34,8 +36,12 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserDto> update(@PathVariable Long id, @RequestBody Map<String, Object> fields) {
-        return ResponseEntity.ok(userService.update(id,fields));
+    public ResponseEntity<UserDto> updateUser(
+            @PathVariable Long id,
+            @Valid @RequestBody UserUpdateRequest updateRequest
+    ) {
+        UserDto updatedUser = userService.update(id, updateRequest);
+        return ResponseEntity.ok(updatedUser);
     }
 
     @DeleteMapping("/{id}")

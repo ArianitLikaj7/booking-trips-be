@@ -1,6 +1,5 @@
 package com.bookingtrips.booking_trips_backend.entity;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -22,7 +21,7 @@ import java.util.List;
 @Table(name = "users")
 public class User extends BaseEntity implements UserDetails {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "created_at")
