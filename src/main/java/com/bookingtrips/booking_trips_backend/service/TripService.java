@@ -11,8 +11,8 @@ import com.bookingtrips.booking_trips_backend.mapper.TripMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -21,32 +21,48 @@ public class TripService {
     private final TripRepository tripRepository;
     private final TripMapper tripMapper;
     private final AuthenticationService authenticationService;
+    private final ImageUploadService imageUploadService;
 
     public TripDto create(TripRequest request) {
         Trip trip = tripMapper.toEntity(request);
         trip.setCreatedBy(authenticationService.getLoggedInUser().getUserId());
-        Trip tripInDb = tripRepository.save(trip);
-        return tripMapper.toDto(tripInDb);
+
+        if (request.getImages() != null && !request.getImages().isEmpty()) {
+            List<String> imageUrls = request.getImages().stream()
+                    .map(image -> {
+                        try {
+                            return imageUploadService.uploadFile(image);
+                        } catch (IOException e) {
+                            throw new RuntimeException("Failed to upload image", e);
+                        }
+                    })
+                    .collect(Collectors.toList());
+            trip.setImageUrls(imageUrls);
+        }
+
+        Trip savedTrip = tripRepository.save(trip);
+        return tripMapper.toDto(savedTrip);
     }
 
     public TripDto getById(Long id) {
         Trip trip = tripRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        String.format("Trip with %s id not found", id)
+                        String.format("Trip with id %s not found", id)
                 ));
         return tripMapper.toDto(trip);
     }
 
     public List<TripDto> getAll() {
-        return tripRepository.findAll()
-                .stream()
+        return tripRepository.findAll().stream()
                 .map(tripMapper::toDto)
                 .collect(Collectors.toList());
     }
 
     public List<TripDto> getAllMyTrips() {
-      return tripRepository.findAllByCreatedBy(authenticationService.getLoggedInUser().getUserId());
-
+        return tripRepository.findAllByCreatedBy(authenticationService.getLoggedInUser().getUserId())
+                .stream()
+                .map(tripMapper::toDto)
+                .collect(Collectors.toList());
     }
 
     public void saveEntity(Trip trip) {
@@ -56,7 +72,7 @@ public class TripService {
     public Trip getEntityById(Long id) {
         return tripRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        String.format("Trip with %s id not found", id)
+                        String.format("Trip with id %s not found", id)
                 ));
     }
 
@@ -64,29 +80,32 @@ public class TripService {
         if (!id.equals(request.getId())) {
             throw new MismatchedInputException("Ids don't match");
         }
-        Trip tripInDb = tripRepository.findById(id).orElseThrow(() ->
-                new ResourceNotFoundException(String.format("Trip with %s id not found", id))
-        );
+        Trip tripInDb = tripRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(String.format("Trip with id %s not found", id)));
+
         tripMapper.toEntity(request, tripInDb);
-        return tripMapper.toDto(tripRepository.save(tripInDb));
+        Trip updatedTrip = tripRepository.save(tripInDb);
+        return tripMapper.toDto(updatedTrip);
     }
 
     public void deleteById(Long id) {
-        tripRepository.findById(id)
+        Trip trip = tripRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        String.format("Trip with %s id not found", id)
+                        String.format("Trip with id %s not found", id)
                 ));
-        tripRepository.deleteById(id);
+        tripRepository.delete(trip);
     }
 
     public List<TripDto> findTripsByProperties(String search) {
-        return Optional.ofNullable(tripRepository.findTripsByProperties(search))
-                .orElse(List.of());
+        return tripRepository.findTripsByProperties(search).stream()
+                .map(tripMapper::toDto)
+                .collect(Collectors.toList());
     }
 
-
     public List<TripDto> findTripsByPrice(Double price) {
-        return tripRepository.findTripsByPrice(price);
+        return tripRepository.findTripsByPrice(price).stream()
+                .map(tripMapper::toDto)
+                .collect(Collectors.toList());
     }
 
     public Long findAvailableSeats(Long tripId) {

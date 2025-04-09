@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @Setter
@@ -30,6 +31,7 @@ public class UserRequest {
     private String password;
 
     private String phoneNumber;
+    private MultipartFile image;
 
     @NotNull(message = "Role is required")
     private Role role;

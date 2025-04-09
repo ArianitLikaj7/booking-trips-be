@@ -8,7 +8,6 @@ import com.bookingtrips.booking_trips_backend.entity.User;
 import com.bookingtrips.booking_trips_backend.exception.ResourceNotFoundException;
 import com.bookingtrips.booking_trips_backend.exception.UserAlreadyExists;
 import com.bookingtrips.booking_trips_backend.mapper.UserMapper;
-import com.bookingtrips.booking_trips_backend.util.ReflectionUtil;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -20,18 +19,19 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
+
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
     private final JavaMailSender javaMailSender;
+    private final ImageUploadService imageUploadService;
 
     @Transactional
     public UserDto create(UserRequest request) {
@@ -45,6 +45,16 @@ public class UserService {
 
         User user = userMapper.toEntity(request);
         setUserPasswordAndRole(request, user);
+
+        if (request.getImage() != null && !request.getImage().isEmpty()) {
+            try {
+                String imageUrlOfUser = imageUploadService.uploadFile(request.getImage());
+                user.setImageUrlOfUser(imageUrlOfUser);
+            } catch (IOException e) {
+                throw new RuntimeException("Failed to upload profile image", e);
+            }
+        }
+
         User savedUser = userRepository.save(user);
         return userMapper.toDto(savedUser);
     }
@@ -62,18 +72,25 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
-    public UserDto update(Long id, UserUpdateRequest updateRequest) {
+    @Transactional
+    public UserDto update(Long id, UserUpdateRequest request) {
         User userInDb = userRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        String.format("User with id %s not found", id)
-                ));
+                .orElseThrow(() -> new ResourceNotFoundException("User with id " + id + " not found"));
 
-        userMapper.toEntity(updateRequest, userInDb);
+        userMapper.toEntity(request, userInDb);
+
+        if (request.getImage() != null && !request.getImage().isEmpty()) {
+            try {
+                String imageUrlOfUser = imageUploadService.uploadFile(request.getImage());
+                userInDb.setImageUrlOfUser(imageUrlOfUser);
+            } catch (IOException e) {
+                throw new RuntimeException("Failed to upload profile image", e);
+            }
+        }
 
         User updatedUser = userRepository.save(userInDb);
         return userMapper.toDto(updatedUser);
     }
-
 
     public UserDto getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -120,7 +137,6 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
     }
-
 
     private void setUserPasswordAndRole(UserRequest request, User user) {
         user.setPassword(passwordEncoder.encode(request.getPassword()));
