@@ -14,4 +14,5 @@ public class ReservationRequest {
     @NotNull
     private Long tripId;
     private int  seatNumber;
+    private String reservedFor;
 }

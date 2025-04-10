@@ -11,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/users")
@@ -20,8 +19,8 @@ public class UserController {
 
     private final UserService userService;
 
-    @PostMapping
-    public ResponseEntity<UserDto> create(@Valid @RequestBody UserRequest request){
+    @PostMapping(consumes = "multipart/form-data")
+    public ResponseEntity<UserDto> create(@ModelAttribute @Valid UserRequest request) {
         return new ResponseEntity<>(userService.create(request), HttpStatus.CREATED);
     }
 
@@ -35,13 +34,12 @@ public class UserController {
         return ResponseEntity.ok(userService.getAll());
     }
 
-    @PutMapping("/{id}")
+    @PutMapping(value = "/{id}", consumes = "multipart/form-data")
     public ResponseEntity<UserDto> updateUser(
             @PathVariable Long id,
-            @Valid @RequestBody UserUpdateRequest updateRequest
+            @ModelAttribute @Valid UserUpdateRequest updateRequest
     ) {
-        UserDto updatedUser = userService.update(id, updateRequest);
-        return ResponseEntity.ok(updatedUser);
+        return ResponseEntity.ok(userService.update(id, updateRequest));
     }
 
     @DeleteMapping("/{id}")

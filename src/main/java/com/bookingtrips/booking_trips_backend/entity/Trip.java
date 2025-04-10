@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -47,8 +48,11 @@ public class Trip extends BaseEntity{
     @Column(name = "description")
     private String description;
 
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "trip_images", joinColumns = @JoinColumn(name = "trip_id"))
     @Column(name = "image_url")
-    private String imageUrl;
+    private List<String> imageUrls;
+
 
     @Column(name = "local_date_time")
     private LocalDateTime localDateTime;

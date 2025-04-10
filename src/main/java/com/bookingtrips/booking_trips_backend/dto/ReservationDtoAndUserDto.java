@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -26,5 +28,6 @@ public class ReservationDtoAndUserDto {
     private Double price;
     private String title;
     private String description;
-    private String imageUrl;
+    private List<String> imageUrls;
+    private String reservedFor;
 }

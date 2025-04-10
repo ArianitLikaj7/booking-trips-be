@@ -9,16 +9,19 @@ import com.bookingtrips.booking_trips_backend.dto.request.ReservationRequest;
 import com.bookingtrips.booking_trips_backend.dto.request.ReservationUpdateRequest;
 import com.bookingtrips.booking_trips_backend.entity.Reservation;
 import com.bookingtrips.booking_trips_backend.entity.Trip;
+import com.bookingtrips.booking_trips_backend.entity.User;
 import com.bookingtrips.booking_trips_backend.exception.IlegalNumberOfSeatsException;
 import com.bookingtrips.booking_trips_backend.exception.MismatchedInputException;
 import com.bookingtrips.booking_trips_backend.exception.ReservationAlreadyExists;
 import com.bookingtrips.booking_trips_backend.exception.ResourceNotFoundException;
 import com.bookingtrips.booking_trips_backend.mapper.ReservationMapper;
+import com.bookingtrips.booking_trips_backend.mapper.TripMapper;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -27,6 +30,7 @@ public class ReservationService {
     private final ReservationMapper reservationMapper;
     private final AuthenticationService authenticationService;
     private final TripService tripService;
+    private final TripMapper tripMapper;
 
     @Transactional
     public ReservationDto create(ReservationRequest request) {
@@ -55,13 +59,51 @@ public class ReservationService {
     }
 
     public List<ReservationDtoAndUserDto> getAllReservationsForAdmin() {
-        return reservationRepository.getReservationsByAdminId(authenticationService.getLoggedInUser().getUserId());
+        Long adminId = authenticationService.getLoggedInUser().getUserId();
+        List<Reservation> reservations = reservationRepository.findAllByTripCreatedBy(adminId);
+
+        return reservations.stream().map(r -> {
+            Trip trip = r.getTrip();
+            User user = r.getUser();
+
+            return new ReservationDtoAndUserDto(
+                    user.getId(),
+                    user.getFirstName(),
+                    user.getLastName(),
+                    user.getUsername(),
+                    user.getEmail(),
+                    user.getPhoneNumber(),
+                    trip.getId(),
+                    trip.getCompanyName(),
+                    trip.getOrigin(),
+                    trip.getDestination(),
+                    trip.getAvailableSeats(),
+                    trip.getTotalSeats(),
+                    trip.getRoute(),
+                    trip.getPrice(),
+                    trip.getTitle(),
+                    trip.getDescription(),
+                    trip.getImageUrls(),
+                    r.getReservedFor()
+            );
+        }).collect(Collectors.toList());
     }
+
 
     public List<TripDto> myReservation() {
         Long userId = authenticationService.getLoggedInUser().getUserId();
-        return reservationRepository.findMyReservations(userId);
+        List<Trip> trips = reservationRepository.findMyReservations(userId);
+
+        if (trips.isEmpty()) {
+            throw new ResourceNotFoundException(
+                    String.format("No reservations found for user with id: %s", userId)
+            );
+        }
+        return trips.stream()
+                .map(tripMapper::toDto)
+                .collect(Collectors.toList());
     }
+
 
     public List<UserDto> getByTripIdAndUserId(Long tripId) {
         Long userId = authenticationService.getLoggedInUser().getUserId();

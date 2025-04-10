@@ -50,6 +50,9 @@ public class User extends BaseEntity implements UserDetails {
     @Column(name = "phone_number")
     private String phoneNumber;
 
+    @Column(name = "image_url_of_user")
+    private String imageUrlOfUser;
+
     @Enumerated(EnumType.STRING)
     private Role role;
 

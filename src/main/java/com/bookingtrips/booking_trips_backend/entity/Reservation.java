@@ -21,6 +21,9 @@ public class Reservation extends BaseEntity{
     @Column(name = "seat_number")
     private int seatNumber;
 
+    @Column(name = "reserved_for")
+    private String reservedFor;
+
     @Column(name = "trip_id")
     private Long tripId;
 
