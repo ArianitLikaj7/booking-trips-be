@@ -28,7 +28,8 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
         User user = userRepository.findByUsername(email).orElseThrow();
         String token = jwtService.generateToken(user);
 
-        response.setContentType("application/json");
-        response.getWriter().write("{\"token\":\"" + token + "\"}");
+        String FRONTEND_URL = "https://bookjourneyapp.netlify.app";
+        String redirectUrl = FRONTEND_URL + "/oauth2/success?token=" + token;
+        response.sendRedirect(redirectUrl);
     }
 }
