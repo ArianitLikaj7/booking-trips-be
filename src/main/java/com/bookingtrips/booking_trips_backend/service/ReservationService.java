@@ -93,12 +93,6 @@ public class ReservationService {
     public List<TripDto> myReservation() {
         Long userId = authenticationService.getLoggedInUser().getUserId();
         List<Trip> trips = reservationRepository.findMyReservations(userId);
-
-        if (trips.isEmpty()) {
-            throw new ResourceNotFoundException(
-                    String.format("No reservations found for user with id: %s", userId)
-            );
-        }
         return trips.stream()
                 .map(tripMapper::toDto)
                 .collect(Collectors.toList());
