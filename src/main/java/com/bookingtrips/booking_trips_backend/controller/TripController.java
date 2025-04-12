@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/api/v1/trips")
 @RequiredArgsConstructor
@@ -28,7 +30,7 @@ public class TripController {
 
 
     @GetMapping("/{id}")
-    public ResponseEntity<TripDto> getTripById(@PathVariable Long id) {
+    public ResponseEntity<TripDto> getTripById(@PathVariable UUID id) {
         TripDto tripDto = tripService.getById(id);
         return new ResponseEntity<>(tripDto, HttpStatus.OK);
     }
@@ -46,13 +48,13 @@ public class TripController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<TripDto> updateTrip(@PathVariable Long id, @Valid @RequestBody TripUpdateRequest request) {
+    public ResponseEntity<TripDto> updateTrip(@PathVariable UUID id, @Valid @RequestBody TripUpdateRequest request) {
         TripDto updatedTrip = tripService.update(id, request);
         return new ResponseEntity<>(updatedTrip, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTrip(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteTrip(@PathVariable UUID id) {
         tripService.deleteById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
@@ -70,7 +72,7 @@ public class TripController {
     }
 
     @GetMapping("/{id}/available-seats")
-    public ResponseEntity<Long> findAvailableSeats(@PathVariable Long id) {
+    public ResponseEntity<Long> findAvailableSeats(@PathVariable UUID id) {
         Long availableSeats = tripService.findAvailableSeats(id);
         return new ResponseEntity<>(availableSeats, HttpStatus.OK);
     }

@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.UUID;
+
 @Entity
 @Table(name = "favorites", uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "trip_id"})})
 @Getter
@@ -16,14 +18,15 @@ import lombok.Setter;
 public class Favorite {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue
+    @Column(columnDefinition = "uuid", updatable = false, nullable = false)
+    private UUID id;
 
     @Column(name = "user_id", nullable = false)
-    private Long userId;
+    private UUID userId;
 
     @Column(name = "trip_id", nullable = false)
-    private Long tripId;
+    private UUID tripId;
 
     @ManyToOne
     @JoinColumn(name = "user_id", insertable = false, updatable = false)

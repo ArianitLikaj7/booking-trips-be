@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -44,7 +45,7 @@ public class TripService {
         return tripMapper.toDto(savedTrip);
     }
 
-    public TripDto getById(Long id) {
+    public TripDto getById(UUID id) {
         Trip trip = tripRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         String.format("Trip with id %s not found", id)
@@ -69,14 +70,14 @@ public class TripService {
         tripRepository.save(trip);
     }
 
-    public Trip getEntityById(Long id) {
+    public Trip getEntityById(UUID id) {
         return tripRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         String.format("Trip with id %s not found", id)
                 ));
     }
 
-    public TripDto update(Long id, TripUpdateRequest request) {
+    public TripDto update(UUID id, TripUpdateRequest request) {
         if (!id.equals(request.getId())) {
             throw new MismatchedInputException("Ids don't match");
         }
@@ -88,7 +89,7 @@ public class TripService {
         return tripMapper.toDto(updatedTrip);
     }
 
-    public void deleteById(Long id) {
+    public void deleteById(UUID id) {
         Trip trip = tripRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         String.format("Trip with id %s not found", id)

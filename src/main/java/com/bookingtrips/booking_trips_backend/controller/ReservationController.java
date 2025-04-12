@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/reservations")
@@ -29,7 +30,7 @@ public class ReservationController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ReservationDto> getReservationById(@PathVariable Long id) {
+    public ResponseEntity<ReservationDto> getReservationById(@PathVariable UUID id) {
         ReservationDto reservationDto = reservationService.getById(id);
         return new ResponseEntity<>(reservationDto, HttpStatus.OK);
     }
@@ -41,13 +42,13 @@ public class ReservationController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ReservationDto> updateReservation(@PathVariable Long id, @Valid @RequestBody ReservationUpdateRequest request) {
+    public ResponseEntity<ReservationDto> updateReservation(@PathVariable UUID id, @Valid @RequestBody ReservationUpdateRequest request) {
         ReservationDto updatedReservation = reservationService.update(id, request);
         return new ResponseEntity<>(updatedReservation, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteReservation(@PathVariable UUID id) {
         reservationService.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
@@ -59,7 +60,7 @@ public class ReservationController {
     }
 
     @GetMapping("/trip/{tripId}")
-    public ResponseEntity<List<UserDto>> getByTripIdAndUserId(@PathVariable Long tripId) {
+    public ResponseEntity<List<UserDto>> getByTripIdAndUserId(@PathVariable UUID tripId) {
         List<UserDto> reservations = reservationService.getByTripIdAndUserId(tripId);
         return new ResponseEntity<>(reservations, HttpStatus.OK);
     }
