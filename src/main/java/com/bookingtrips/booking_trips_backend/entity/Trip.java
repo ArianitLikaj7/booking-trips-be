@@ -18,6 +18,10 @@ import java.util.List;
 @Table(name = "trips")
 public class Trip extends BaseEntity{
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     @Column(name = "created_by")
     private Long createdBy;
 

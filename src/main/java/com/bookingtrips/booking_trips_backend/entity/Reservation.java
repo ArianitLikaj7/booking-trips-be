@@ -15,6 +15,10 @@ import lombok.Setter;
 @Table(name = "reservations")
 public class Reservation extends BaseEntity{
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     @Column(name = "user_id")
     private Long userId;
 
