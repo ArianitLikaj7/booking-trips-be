@@ -1,0 +1,13 @@
+UPDATE trip_images SET image_url = 'https://res.cloudinary.com/dcgkgye6t/image/upload/v1744477603/pexels-vividcafe-681335_vz4b9x.jpg' WHERE trip_id = 1;
+UPDATE trip_images SET image_url = 'https://res.cloudinary.com/dcgkgye6t/image/upload/v1744477598/pexels-axp-photography-500641970-16738855_lgmwop.jpg' WHERE trip_id = 2;
+UPDATE trip_images SET image_url = 'https://res.cloudinary.com/dcgkgye6t/image/upload/v1744477588/pexels-dominikagregus-672532_lvnqm4.jpg' WHERE trip_id = 3;
+UPDATE trip_images SET image_url = 'https://res.cloudinary.com/dcgkgye6t/image/upload/v1744477586/pexels-o-darny-17746130_raccic.jpg' WHERE trip_id = 4;
+UPDATE trip_images SET image_url = 'https://res.cloudinary.com/dcgkgye6t/image/upload/v1744477585/pexels-emre-akyol-320381804-17463331_vzipzv.jpg' WHERE trip_id = 5;
+UPDATE trip_images SET image_url = 'https://res.cloudinary.com/dcgkgye6t/image/upload/v1744477583/pexels-rick98-3467149_h0m4zd.jpg' WHERE trip_id = 6;
+UPDATE trip_images SET image_url = 'https://res.cloudinary.com/dcgkgye6t/image/upload/v1744477582/pexels-pixabay-280221_h5o2cu.jpg' WHERE trip_id = 7;
+UPDATE trip_images SET image_url = 'https://res.cloudinary.com/dcgkgye6t/image/upload/v1744477582/pexels-pixabay-280221_h5o2cu.jpg' WHERE trip_id = 8;
+UPDATE trip_images SET image_url = 'https://res.cloudinary.com/dcgkgye6t/image/upload/v1744477570/pexels-roman-odintsov-8180458_vur4oi.jpg' WHERE trip_id = 9;
+UPDATE trip_images SET image_url = 'https://res.cloudinary.com/dcgkgye6t/image/upload/v1744477569/pexels-peng-liu-45946-169647_kwltoq.jpg' WHERE trip_id = 10;
+UPDATE trip_images SET image_url = 'https://res.cloudinary.com/dcgkgye6t/image/upload/v1744477564/pexels-adnara-21915598_pi2jy0.jpg' WHERE trip_id = 11;
+UPDATE trip_images SET image_url = 'https://res.cloudinary.com/dcgkgye6t/image/upload/v1744477562/pexels-pixabay-208745_dfvpcy.jpg' WHERE trip_id = 12;
+UPDATE trip_images SET image_url = 'https://res.cloudinary.com/dcgkgye6t/image/upload/v1744212362/cld-sample-2.jpg' WHERE trip_id = 13;
