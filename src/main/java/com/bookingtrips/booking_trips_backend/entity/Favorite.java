@@ -6,8 +6,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
+import com.github.f4b6a3.uuid.UuidCreator;
 import java.util.UUID;
+
 
 @Entity
 @Table(name = "favorites", uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "trip_id"})})
@@ -18,9 +19,13 @@ import java.util.UUID;
 public class Favorite {
 
     @Id
-    @GeneratedValue
     @Column(columnDefinition = "uuid", updatable = false, nullable = false)
     private UUID id;
+
+    @PrePersist
+    public void prePersist() {
+        if (id == null) id = UuidCreator.getTimeOrdered();
+    }
 
     @Column(name = "user_id", nullable = false)
     private UUID userId;

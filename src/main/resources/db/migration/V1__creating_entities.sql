@@ -1,7 +1,6 @@
-CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 
 CREATE TABLE users (
-                       id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+                       id UUID PRIMARY KEY,
                        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
                        updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
                        first_name VARCHAR(255),
@@ -15,7 +14,7 @@ CREATE TABLE users (
 );
 
 CREATE TABLE trips (
-                       id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+                       id UUID PRIMARY KEY,
                        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
                        updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
                        created_by UUID,
@@ -34,7 +33,7 @@ CREATE TABLE trips (
 );
 
 CREATE TABLE reservations (
-                              id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+                              id UUID PRIMARY KEY,
                               created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
                               updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
                               user_id UUID,
@@ -46,7 +45,7 @@ CREATE TABLE reservations (
 );
 
 CREATE TABLE favorites (
-                           id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+                           id UUID PRIMARY KEY,
                            user_id UUID NOT NULL,
                            trip_id UUID NOT NULL,
                            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -56,7 +55,7 @@ CREATE TABLE favorites (
 );
 
 CREATE TABLE trip_images (
-                             id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+                             id UUID PRIMARY KEY,
                              trip_id UUID NOT NULL,
                              image_url VARCHAR(255),
                              CONSTRAINT fk_trip_images_trip FOREIGN KEY (trip_id) REFERENCES trips(id) ON DELETE CASCADE
