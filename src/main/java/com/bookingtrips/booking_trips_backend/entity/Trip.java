@@ -1,6 +1,7 @@
 package com.bookingtrips.booking_trips_backend.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.github.f4b6a3.uuid.UuidCreator;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,18 +12,22 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
+@Entity
+@Table(name = "trips")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
-@Table(name = "trips")
-public class Trip extends BaseEntity{
+public class Trip extends BaseEntity {
 
     @Id
-    @GeneratedValue
     @Column(columnDefinition = "uuid", updatable = false, nullable = false)
     private UUID id;
+
+    @PrePersist
+    public void prePersist() {
+        if (id == null) id = UuidCreator.getTimeOrdered();
+    }
 
     @Column(name = "created_by")
     private UUID createdBy;
@@ -58,7 +63,6 @@ public class Trip extends BaseEntity{
     @CollectionTable(name = "trip_images", joinColumns = @JoinColumn(name = "trip_id"))
     @Column(name = "image_url")
     private List<String> imageUrls;
-
 
     @Column(name = "local_date_time")
     private LocalDateTime localDateTime;

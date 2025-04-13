@@ -1,5 +1,7 @@
 package com.bookingtrips.booking_trips_backend.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.github.f4b6a3.uuid.UuidCreator;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -7,10 +9,9 @@ import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import java.util.UUID;
+
 import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 @Getter
 @Setter
@@ -22,10 +23,13 @@ import java.util.List;
 public class User extends BaseEntity implements UserDetails {
 
     @Id
-    @GeneratedValue
     @Column(columnDefinition = "uuid", updatable = false, nullable = false)
     private UUID id;
 
+    @PrePersist
+    public void prePersist() {
+        if (id == null) id = UuidCreator.getTimeOrdered();
+    }
 
     @Column(name = "created_at")
     @CreationTimestamp

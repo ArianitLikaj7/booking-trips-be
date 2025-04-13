@@ -19,6 +19,7 @@ public class TripUpdateRequest {
     @NotNull
     private UUID id;
     @NotNull private UUID userId;
+    private String title;
     private String companyName;
     private String origin;
     private String destination;
@@ -26,5 +27,4 @@ public class TripUpdateRequest {
     private int totalSeats;
     private List<MultipartFile> imageUrls;
     private String route;
-    private LocalDateTime localDateTime;
 }

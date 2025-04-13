@@ -1,4 +1,3 @@
--- INSERT për TABELËN users
 INSERT INTO users (id, created_at, updated_at, first_name, last_name, username, password, role, email, phone_number, image_url_of_user) VALUES
                                                                                                                                             ('dcef14e1-28d3-459c-aac7-473556c8a46f', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'Arben', 'Hoxha', 'arben', '$2a$12$2Ar2P025tUMLBMxYDxu1WuJhS5ufeMuafkg9gkG0SE6xe9WhEwGnC', 'USER', 'user0@example.com', '+355-67296077', 'https://randomuser.me/api/portraits/women/1.jpg'),
                                                                                                                                             ('c956b658-06cc-40af-a6b7-1fdd087e1eab', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'Besa', 'Berisha', 'besa', '$2a$12$2Ar2P025tUMLBMxYDxu1WuJhS5ufeMuafkg9gkG0SE6xe9WhEwGnC', 'USER', 'user1@example.com', '+355-64816971', 'https://randomuser.me/api/portraits/men/2.jpg'),
@@ -11,8 +10,6 @@ INSERT INTO users (id, created_at, updated_at, first_name, last_name, username, 
                                                                                                                                             ('16ea8acb-b702-47b6-8403-ed4cf2e12278', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'Florian', 'Dervishi', 'florian', '$2a$12$2Ar2P025tUMLBMxYDxu1WuJhS5ufeMuafkg9gkG0SE6xe9WhEwGnC', 'ADMIN', 'user8@example.com', '+355-66287119', 'https://randomuser.me/api/portraits/women/9.jpg'),
                                                                                                                                             ('18455311-198f-4bf9-b8ad-4eb82106c514', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'Elira', 'Leka', 'elira', '$2a$12$2Ar2P025tUMLBMxYDxu1WuJhS5ufeMuafkg9gkG0SE6xe9WhEwGnC', 'SUPER_ADMIN', 'user9@example.com', '+355-64506908', 'https://randomuser.me/api/portraits/men/10.jpg');
 
--- INSERT për TABELËN trips
--- Këtu, fusha created_by është zëvendësuar me ID-të e përdoruesve ekzistues:
 INSERT INTO trips (id, created_at, updated_at, created_by, origin, destination, available_seats, total_seats, route, price, title, description, type_of_trip, company_name, local_date_time) VALUES
                                                                                                                                                                                                  ('3881296b-310f-42b9-864e-f82cc7e8f589', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'dcef14e1-28d3-459c-aac7-473556c8a46f', 'Tiranë', 'Durrës', 18, 21, 'Rruga 1', 21.66, 'Shëtitje', 'Udhëtim komod dhe i sigurt.', 'HOTEL_ONLY', 'Kompania0', '2025-04-13 13:25:14'),
                                                                                                                                                                                                  ('ece43a25-fe18-46d9-bc7c-926ce7a21346', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'c956b658-06cc-40af-a6b7-1fdd087e1eab', 'Shkodër', 'Vlorë', 10, 11, 'Rruga 2', 25.47, 'Shëtitje', 'Eksplorim i qyteteve.', 'HOTEL_ONLY', 'Kompania1', '2025-04-23 13:25:14'),
@@ -25,7 +22,6 @@ INSERT INTO trips (id, created_at, updated_at, created_by, origin, destination, 
                                                                                                                                                                                                  ('82bab14f-b8ef-4a35-b014-49b1a56a4224', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '00e834c8-9274-48aa-99f4-7b926f8956b2', 'Shkodër', 'Prizren', 27, 29, 'Rruga 9', 72.67, 'Shëtitje', 'Udhëtim kulturor.', 'HOTEL_ONLY', 'Kompania8', '2025-07-02 13:25:14'),
                                                                                                                                                                                                  ('3492d49d-71f1-4bba-aa85-8913266ef927', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '18455311-198f-4bf9-b8ad-4eb82106c514', 'Tirane', 'Sarandë', 3, 13, 'Rruga 10', 40.11, 'Udhëtim pune', 'Udhëtim për takime biznesi.', 'HOTEL_ONLY', 'Kompania9', '2025-07-12 13:25:14');
 
--- INSERT për TABELËN trip_images
 INSERT INTO trip_images (id, trip_id, image_url) VALUES
                                                      ('d6a6017b-817f-4ece-82c2-017115cf1c50', '3881296b-310f-42b9-864e-f82cc7e8f589', 'https://res.cloudinary.com/dcgkgye6t/image/upload/v1744477603/pexels-vividcafe-681335_vz4b9x.jpg'),
                                                      ('80caea71-0cd6-4abd-8729-fafa479af1d9', 'ece43a25-fe18-46d9-bc7c-926ce7a21346', 'https://res.cloudinary.com/dcgkgye6t/image/upload/v1744477598/pexels-axp-photography-500641970-16738855_lgmwop.jpg'),
@@ -38,7 +34,6 @@ INSERT INTO trip_images (id, trip_id, image_url) VALUES
                                                      ('f9647fb7-4e6f-42dc-9ff3-0d8a8a092e9f', '82bab14f-b8ef-4a35-b014-49b1a56a4224', 'https://res.cloudinary.com/dcgkgye6t/image/upload/v1744477569/pexels-peng-liu-45946-169647_kwltoq.jpg'),
                                                      ('992bdbf8-4b63-46b3-b109-a439a622a933', '3492d49d-71f1-4bba-aa85-8913266ef927', 'https://res.cloudinary.com/dcgkgye6t/image/upload/v1744477564/pexels-adnara-21915598_pi2jy0.jpg');
 
--- INSERT për TABELËN reservations
 INSERT INTO reservations (id, created_at, updated_at, user_id, trip_id, seat_number, reserved_for) VALUES
                                                                                                        ('2a67487d-e4b1-45d7-b801-72fa90524a03', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'dcef14e1-28d3-459c-aac7-473556c8a46f', '3881296b-310f-42b9-864e-f82cc7e8f589', 16, 'Rezervuar0'),
                                                                                                        ('33180175-946b-48f4-8bb5-7e6163f1d385', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'c956b658-06cc-40af-a6b7-1fdd087e1eab', 'ece43a25-fe18-46d9-bc7c-926ce7a21346', 21, 'Rezervuar1'),
@@ -51,7 +46,6 @@ INSERT INTO reservations (id, created_at, updated_at, user_id, trip_id, seat_num
                                                                                                        ('75053812-8c6c-4a57-bf8e-7f11d9fcd5cb', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '16ea8acb-b702-47b6-8403-ed4cf2e12278', '82bab14f-b8ef-4a35-b014-49b1a56a4224', 46, 'Rezervuar8'),
                                                                                                        ('ed4567a1-9842-4e2d-b0d3-08d6f5708c52', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '18455311-198f-4bf9-b8ad-4eb82106c514', '3492d49d-71f1-4bba-aa85-8913266ef927', 5, 'Rezervuar9');
 
--- INSERT për TABELËN favorites
 INSERT INTO favorites (id, user_id, trip_id, created_at) VALUES
                                                              ('84168746-4c96-4b98-9563-ae9582005825', 'dcef14e1-28d3-459c-aac7-473556c8a46f', '3881296b-310f-42b9-864e-f82cc7e8f589', CURRENT_TIMESTAMP),
                                                              ('1c466a4a-2b71-48bd-83d4-791235a8fd58', 'c956b658-06cc-40af-a6b7-1fdd087e1eab', 'ece43a25-fe18-46d9-bc7c-926ce7a21346', CURRENT_TIMESTAMP),
