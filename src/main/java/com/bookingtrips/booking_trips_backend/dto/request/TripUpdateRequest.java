@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -14,8 +15,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class TripUpdateRequest {
     @NotNull
-    private Long id;
-    @NotNull private Long userId;
+    private UUID id;
+    @NotNull private UUID userId;
     private String companyName;
     private String origin;
     private String destination;

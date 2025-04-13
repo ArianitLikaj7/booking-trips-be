@@ -7,13 +7,14 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class TripDto {
-    private Long id;
+    private UUID id;
     private String companyName;
     private String origin;
     private String destination;
