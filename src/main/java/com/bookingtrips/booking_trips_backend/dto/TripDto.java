@@ -24,7 +24,7 @@ public class TripDto {
     private Double price;
     private String title;
     private String description;
-    private List<String> imageUrls;
+    private List<String> images;
     private String typeOfTrip;
     private LocalDateTime localDateTime;
 }
