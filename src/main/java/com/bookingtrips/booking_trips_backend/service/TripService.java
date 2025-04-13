@@ -109,7 +109,7 @@ public class TripService {
                 .collect(Collectors.toList());
     }
 
-    public Long findAvailableSeats(Long tripId) {
+    public Long findAvailableSeats(UUID tripId) {
         Long availableSeats = tripRepository.findAvailableSeats(tripId);
         if (availableSeats == null) {
             throw new ResourceNotFoundException(String.format("No available seats found for trip with id %s", tripId));

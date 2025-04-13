@@ -17,5 +17,5 @@ public interface TripRepository extends JpaRepository<Trip, UUID> {
     List<Trip> findTripsByPrice(Double price);
 
     @Query("SELECT t.availableSeats FROM Trip t WHERE t.id = :tripId AND t.availableSeats > 0")
-    Long findAvailableSeats(Long tripId);
+    Long findAvailableSeats(UUID tripId);
 }

@@ -32,7 +32,7 @@ public class Reservation extends BaseEntity{
     private String reservedFor;
 
     @Column(name = "trip_id")
-    private Long tripId;
+    private UUID tripId;
 
     @ManyToOne
     @JoinColumn(name = "user_id", insertable = false, updatable = false)
