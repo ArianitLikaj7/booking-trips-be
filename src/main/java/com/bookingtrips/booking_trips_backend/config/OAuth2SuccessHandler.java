@@ -28,8 +28,12 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
         User user = userRepository.findByUsername(email).orElseThrow();
         String token = jwtService.generateToken(user);
 
-        String FRONTEND_URL = "https://bookjourneyapp.netlify.app";
-        String redirectUrl = FRONTEND_URL + "/oauth2/success?token=" + token;
+        String redirectUri = request.getParameter("state");
+        if (redirectUri == null || redirectUri.isBlank()) {
+            redirectUri = "https://bookjourneyapp.netlify.app";
+        }
+
+        String redirectUrl = redirectUri + "/oauth2-success.html?token=" + token;
         response.sendRedirect(redirectUrl);
     }
 }

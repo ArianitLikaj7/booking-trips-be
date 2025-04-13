@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>OAuth2 Success</title>
+</head>
+<body>
+<script>
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get("token");
+
+    if (token && window.opener) {
+        window.opener.postMessage({ token }, "*");
+
+        window.close();
+    } else {
+        document.body.innerText = "Failed to retrieve token or no opener window.";
+    }
+</script>
+</body>
+</html>
