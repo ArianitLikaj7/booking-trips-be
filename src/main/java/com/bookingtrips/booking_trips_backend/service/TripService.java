@@ -28,8 +28,8 @@ public class TripService {
         Trip trip = tripMapper.toEntity(request);
         trip.setCreatedBy(authenticationService.getLoggedInUser().getUserId());
 
-        if (request.getImages() != null && !request.getImages().isEmpty()) {
-            List<String> imageUrls = request.getImages().stream()
+        if (request.getImageUrls() != null && !request.getImageUrls().isEmpty()) {
+            List<String> imageUrls = request.getImageUrls().stream()
                     .map(image -> {
                         try {
                             return imageUploadService.uploadFile(image);
@@ -85,17 +85,40 @@ public class TripService {
                 .orElseThrow(() -> new ResourceNotFoundException(String.format("Trip with id %s not found", id)));
 
         tripMapper.toEntity(request, tripInDb);
+
+        if (request.getImageUrls() != null && !request.getImageUrls().isEmpty()) {
+            List<String> uploadedUrls = request.getImageUrls().stream()
+                    .map(image -> {
+                        try {
+                            return imageUploadService.uploadFile(image);
+                        } catch (IOException e) {
+                            throw new RuntimeException("Failed to upload image", e);
+                        }
+                    })
+                    .collect(Collectors.toList());
+            tripInDb.setImageUrls(uploadedUrls);
+        }
+
         Trip updatedTrip = tripRepository.save(tripInDb);
         return tripMapper.toDto(updatedTrip);
     }
+
 
     public void deleteById(UUID id) {
         Trip trip = tripRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         String.format("Trip with id %s not found", id)
                 ));
+
+        if (trip.getImageUrls() != null && !trip.getImageUrls().isEmpty()) {
+            for (String imageUrl : trip.getImageUrls()) {
+                imageUploadService.deleteImageByUrl(imageUrl);
+            }
+        }
+
         tripRepository.delete(trip);
     }
+
 
     public List<TripDto> findTripsByProperties(String search) {
         return tripRepository.findTripsByProperties(search).stream()

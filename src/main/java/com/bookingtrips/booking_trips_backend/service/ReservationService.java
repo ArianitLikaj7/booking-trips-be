@@ -66,7 +66,6 @@ public class ReservationService {
         return reservations.stream().map(r -> {
             Trip trip = r.getTrip();
             User user = r.getUser();
-
             return new ReservationDtoAndUserDto(
                     user.getId(),
                     user.getFirstName(),

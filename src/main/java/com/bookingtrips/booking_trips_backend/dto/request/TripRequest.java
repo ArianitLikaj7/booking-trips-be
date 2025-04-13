@@ -25,5 +25,5 @@ public class TripRequest {
     private String description;
     private TypeOfTrip typeOfTrip;
     private LocalDateTime localDateTime;
-    private List<MultipartFile> images;
+    private List<MultipartFile> imageUrls;
 }
