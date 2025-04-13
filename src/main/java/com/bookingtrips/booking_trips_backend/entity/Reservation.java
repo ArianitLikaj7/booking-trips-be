@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -16,11 +17,13 @@ import lombok.Setter;
 public class Reservation extends BaseEntity{
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue
+    @Column(columnDefinition = "uuid", updatable = false, nullable = false)
+    private UUID id;
+
 
     @Column(name = "user_id")
-    private Long userId;
+    private UUID userId;
 
     @Column(name = "seat_number")
     private int seatNumber;
@@ -29,7 +32,7 @@ public class Reservation extends BaseEntity{
     private String reservedFor;
 
     @Column(name = "trip_id")
-    private Long tripId;
+    private UUID tripId;
 
     @ManyToOne
     @JoinColumn(name = "user_id", insertable = false, updatable = false)

@@ -6,13 +6,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.UUID;
+
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class ReservationDto {
-    private Long id;
-    private Long userId;
+    private UUID id;
+    private UUID userId;
     private int seatNumber;
     private String reservedFor;
     private Long tripId;

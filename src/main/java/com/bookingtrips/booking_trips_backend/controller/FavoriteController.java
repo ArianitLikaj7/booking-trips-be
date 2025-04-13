@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/favorites")
@@ -17,7 +18,7 @@ public class FavoriteController {
     private final FavoriteService favoriteService;
 
     @PostMapping("/{tripId}")
-    public ResponseEntity<Object> addFavorite(@PathVariable Long tripId) {
+    public ResponseEntity<Object> addFavorite(@PathVariable UUID tripId) {
         Favorite favorite = favoriteService.addFavorite(tripId);
         return new ResponseEntity<>(favorite, HttpStatus.CREATED);
     }
@@ -28,7 +29,7 @@ public class FavoriteController {
     }
 
     @DeleteMapping("/{tripId}")
-    public ResponseEntity<Void> removeFavorite(@PathVariable Long tripId) {
+    public ResponseEntity<Void> removeFavorite(@PathVariable UUID tripId) {
         favoriteService.removeFavorite(tripId);
         return ResponseEntity.noContent().build();
     }

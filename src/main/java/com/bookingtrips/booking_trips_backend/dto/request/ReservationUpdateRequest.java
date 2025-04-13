@@ -6,12 +6,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.UUID;
+
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class ReservationUpdateRequest {
-    @NotNull private Long id;
-    @NotNull private Long tripId;
+    @NotNull private UUID id;
+    @NotNull private UUID tripId;
     private int  seatNumber;
 }

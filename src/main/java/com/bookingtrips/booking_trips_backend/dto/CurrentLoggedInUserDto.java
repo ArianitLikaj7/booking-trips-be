@@ -2,13 +2,15 @@ package com.bookingtrips.booking_trips_backend.dto;
 
 import lombok.*;
 
+import java.util.UUID;
+
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 public class CurrentLoggedInUserDto {
-        private Long userId;
+        private UUID userId;
         private String username;
         private String firstName;
         private String lastName;

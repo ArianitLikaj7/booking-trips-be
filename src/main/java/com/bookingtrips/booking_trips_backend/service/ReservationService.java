@@ -21,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,7 +35,7 @@ public class ReservationService {
 
     @Transactional
     public ReservationDto create(ReservationRequest request) {
-        Long userId = authenticationService.getLoggedInUser().getUserId();
+        UUID userId = authenticationService.getLoggedInUser().getUserId();
 
         if (reservationRepository.existsByUserIdAndTripId(userId, request.getTripId())) {
             throw new ReservationAlreadyExists("Reservation for this trip already exists.");
@@ -52,14 +53,14 @@ public class ReservationService {
         return reservationMapper.toDto(reservationInDb);
     }
 
-    public ReservationDto getById(Long id) {
+    public ReservationDto getById(UUID id) {
         Reservation reservationInDb = reservationRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Reservation with id %s not found".formatted(id)));
         return reservationMapper.toDto(reservationInDb);
     }
 
     public List<ReservationDtoAndUserDto> getAllReservationsForAdmin() {
-        Long adminId = authenticationService.getLoggedInUser().getUserId();
+        UUID adminId = authenticationService.getLoggedInUser().getUserId();
         List<Reservation> reservations = reservationRepository.findAllByTripCreatedBy(adminId);
 
         return reservations.stream().map(r -> {
@@ -91,7 +92,7 @@ public class ReservationService {
 
 
     public List<TripDto> myReservation() {
-        Long userId = authenticationService.getLoggedInUser().getUserId();
+        UUID userId = authenticationService.getLoggedInUser().getUserId();
         List<Trip> trips = reservationRepository.findMyReservations(userId);
         return trips.stream()
                 .map(tripMapper::toDto)
@@ -99,17 +100,17 @@ public class ReservationService {
     }
 
 
-    public List<UserDto> getByTripIdAndUserId(Long tripId) {
-        Long userId = authenticationService.getLoggedInUser().getUserId();
+    public List<UserDto> getByTripIdAndUserId(UUID tripId) {
+        UUID userId = authenticationService.getLoggedInUser().getUserId();
         return reservationRepository.getReservationsByTripId(userId, tripId);
     }
 
     public Long countReservation() {
-        Long userId = authenticationService.getLoggedInUser().getUserId();
+        UUID userId = authenticationService.getLoggedInUser().getUserId();
         return reservationRepository.countReservation(userId);
     }
 
-    public ReservationDto update(Long id, ReservationUpdateRequest request) {
+    public ReservationDto update(UUID id, ReservationUpdateRequest request) {
         if (!id.equals(request.getId())) {
             throw new MismatchedInputException("IDs don't match.");
         }
@@ -121,14 +122,14 @@ public class ReservationService {
         return reservationMapper.toDto(reservationRepository.save(reservationInDb));
     }
 
-    public void delete(Long id) {
+    public void delete(UUID id) {
         if (!reservationRepository.existsById(id)) {
             throw new ResourceNotFoundException("Reservation with id %s not found".formatted(id));
         }
         reservationRepository.deleteById(id);
     }
 
-    private void updateAvailableSeats(Long tripId, int seatNumber) {
+    private void updateAvailableSeats(UUID tripId, int seatNumber) {
         Trip trip = tripService.getEntityById(tripId);
         int updatedSeats = trip.getAvailableSeats() - seatNumber;
 
@@ -140,7 +141,7 @@ public class ReservationService {
         tripService.saveEntity(trip);
     }
 
-    private void validateSeatAvailability(Long tripId, int seatNumber) {
+    private void validateSeatAvailability(UUID tripId, int seatNumber) {
         TripDto tripDto = tripService.getById(tripId);
         if (seatNumber > tripDto.getAvailableSeats() || seatNumber < 1) {
             throw new IlegalNumberOfSeatsException(

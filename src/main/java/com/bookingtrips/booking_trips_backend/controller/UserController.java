@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/users")
@@ -25,7 +26,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserDto> getById(@PathVariable Long id){
+    public ResponseEntity<UserDto> getById(@PathVariable UUID id){
         return ResponseEntity.ok(userService.getById(id));
     }
 
@@ -36,14 +37,14 @@ public class UserController {
 
     @PutMapping(value = "/{id}", consumes = "multipart/form-data")
     public ResponseEntity<UserDto> updateUser(
-            @PathVariable Long id,
+            @PathVariable UUID id,
             @ModelAttribute @Valid UserUpdateRequest updateRequest
     ) {
         return ResponseEntity.ok(userService.update(id, updateRequest));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id){
+    public ResponseEntity<Void> delete(@PathVariable UUID id){
         userService.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
@@ -55,7 +56,7 @@ public class UserController {
     }
 
     @PostMapping("/change-password")
-    public ResponseEntity<Void> changePassword(@RequestParam Long userId, @RequestParam String oldPassword, @RequestParam String newPassword) {
+    public ResponseEntity<Void> changePassword(@RequestParam UUID userId, @RequestParam String oldPassword, @RequestParam String newPassword) {
         userService.changePassword(userId, oldPassword, newPassword);
         return new ResponseEntity<>(HttpStatus.OK);
     }

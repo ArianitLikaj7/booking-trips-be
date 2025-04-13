@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -21,8 +22,8 @@ public class FavoriteService {
     private final TripService tripService;
 
     @Transactional
-    public Favorite addFavorite(Long tripId) {
-        Long userId = authenticationService.getLoggedInUser().getUserId();
+    public Favorite addFavorite(UUID tripId) {
+        UUID userId = authenticationService.getLoggedInUser().getUserId();
 
         if (favoriteRepository.existsByUserIdAndTripId(userId, tripId)) {
             throw new FavoriteAlreadyExistsException("Trip is already in favorites");
@@ -36,7 +37,7 @@ public class FavoriteService {
     }
 
     public List<TripDto> getUserFavorites() {
-        Long userId = authenticationService.getLoggedInUser().getUserId();
+        UUID userId = authenticationService.getLoggedInUser().getUserId();
 
         List<Favorite> favorites = favoriteRepository.findByUserId(userId);
 
@@ -46,8 +47,8 @@ public class FavoriteService {
     }
 
     @Transactional
-    public void removeFavorite(Long tripId) {
-        Long userId = authenticationService.getLoggedInUser().getUserId();
+    public void removeFavorite(UUID tripId) {
+        UUID userId = authenticationService.getLoggedInUser().getUserId();
 
         boolean exists = favoriteRepository.existsByUserIdAndTripId(userId, tripId);
         if (!exists) {
