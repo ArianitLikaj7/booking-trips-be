@@ -55,7 +55,6 @@ CREATE TABLE favorites (
 );
 
 CREATE TABLE trip_images (
-                             id UUID PRIMARY KEY,
                              trip_id UUID NOT NULL,
                              image_url VARCHAR(255),
                              CONSTRAINT fk_trip_images_trip FOREIGN KEY (trip_id) REFERENCES trips(id) ON DELETE CASCADE
