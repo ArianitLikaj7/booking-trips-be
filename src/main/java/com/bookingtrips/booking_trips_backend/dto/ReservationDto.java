@@ -17,5 +17,5 @@ public class ReservationDto {
     private UUID userId;
     private int seatNumber;
     private String reservedFor;
-    private Long tripId;
+    private UUID tripId;
 }
